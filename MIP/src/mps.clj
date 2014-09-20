@@ -2,12 +2,15 @@
 
 ;;Goal: to generate a valid mps file for a solver to run
 
+
+;;some test equations
 (def cost {:type "N" :name "COST"           :coeff {:XONE 1 :YTWO 4  :ZTHREE 9}})
 (def lim1 {:type "L" :name "LIM1"   :rhs 5  :coeff {:XONE 1 :YTWO 4           }})
 (def lim2 {:type "G" :name "LIM2"   :rhs 10 :coeff {:XONE 1          :ZTHREE 1}})
 (def myeqn {:type "E" :name "MYEQN" :rhs 7  :coeff {        :YTWO -1 :ZTHREE 1}})
 (def eqns (list cost lim1 lim2 myeqn))
 
+;;some test bounds for the test equation variables
 (def ub1 {:type "UP" :variable :XONE :value 4 })
 (def lb2 {:type "LO" :variable :YTWO :value -1 })
 (def ub2 {:type "UP" :variable :YTWO :value 1})
@@ -50,7 +53,6 @@
     (str "COLUMNS\n"
          (clojure.string/join (map print-column cols)))))
 
-
  (defn get-rhs [equations]
    (filter #(not (nil? (second %))) (map (fn [e] [(:name e) (:rhs e)]) equations)))
 
@@ -61,20 +63,14 @@
    (str "RHS\n"
         (clojure.string/join (map print-rhs (get-rhs equations)))))
 
-(get-rhs eqns)
-(printf (rhs eqns))
-
  (defn print-bound [bound]
    (str " " (:type bound) (space-it " BND1" 10) (space-it (name (:variable bound)) 10) (:value bound) "\n"))
-
 
 (print-bound (first bnds))
 
  (defn bounds [bnds]
    (str "BOUNDS\n"
         (clojure.string/join (map print-bound bnds))))
-
- (printf (bounds bnds))
 
 (defn footer []
    "ENDATA")
